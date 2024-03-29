@@ -4,11 +4,41 @@ import { Popover, Transition } from "@headlessui/react";
 
 import { ManageCharactersContext } from "../../hooks/useManageCharacters.tsx";
 
+const arrayButtons = [
+  { text: 'Character', name: 'character', buttons: [
+    { text: 'All', value: 'all' },
+    { text: 'Starred', value: 'starred' },
+    { text: 'Others', value: 'others' }
+  ] },
+  { text: 'Status', name: 'status', buttons: [
+    { text: 'All', value: 'all' },
+    { text: 'Alive', value: 'alive' },
+    { text: 'Dead', value: 'dead' },
+    { text: 'Unknown', value: 'unknown' }
+  ] },
+  { text: 'Specie', name: 'specie', buttons: [
+    { text: 'All', value: 'all' },
+    { text: 'Human', value: 'human' },
+    { text: 'Alien', value: 'alien' }
+  ] },
+  { text: 'Gender', name: 'gender', buttons: [
+    { text: 'All', value: 'all' },
+    { text: 'Male', value: 'male' },
+    { text: 'Female', value: 'female' }
+  ] },
+];
+
 export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
   const [charactersList, setCharactersList] = useState([]);
   const [charactersSelected, setCharactersSelected] = useState({});
   const [filter, setFilter] = useState("");
+  const [filterData, setFilterData] = useState({
+    character: "all",
+    status: "all",
+    specie: "all",
+    gender: "all",
+  });
   const [filterButtons, setFilterButtons] = useState({
     character: "all",
     status: "all",
@@ -40,6 +70,10 @@ export const Search = () => {
     let index = list.findIndex((character) => character.id === id);
     list[index].favourite = !list[index].favourite;
     setCharactersList(list);
+  };
+
+  const conditions = () => {
+    return filterData.character !== 'all' || filterData.status !== 'all' || filterData.specie !== 'all' || filterData.gender !== 'all';
   };
 
   return (
@@ -123,185 +157,48 @@ export const Search = () => {
                   <Popover.Panel className="absolute -right-0 z-10 mt-6 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5">
                     <div>
                       <div className="p-5">
-                        <div >
-                          <p className="mb-2 text-sm text-gray-500 font-normal">
-                            Character
-                          </p>
-
-                          <div className="button_container flex gap-x-4">
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  character: "all",
-                                });
-                              }}
-                            >
-                              All
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  character: "starred",
-                                });
-                              }}
-                            >
-                              Starred
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  character: "others",
-                                });
-                              }}
-                            >
-                              Others
-                            </button>
-                          </div>
-                        </div>
-                        <div className="">
-                          <p className="text-sm pt-5 pb-2 text-gray-500 font-normal">
-                            Status
-                          </p>
-                          <div className="flex gap-x-4">
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  status: "all",
-                                });
-                              }}
-                            >
-                              All
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  status: "alive",
-                                });
-                              }}
-                            >
-                              Alive
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  status: "dead",
-                                });
-                              }}
-                            >
-                              Dead
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  status: "unknown",
-                                });
-                              }}
-                            >
-                              Unknown
-                            </button>
-                          </div>
-                        </div>
-                        <div className="">
-                          <p className="text-sm pt-5 pb-2 text-gray-500 font-normal">
-                            Specie
-                          </p>
-                          <div className="flex gap-x-4">
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  specie: "all",
-                                });
-                              }}
-                            >
-                              All
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  specie: "human",
-                                });
-                              }}
-                            >
-                              Human
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  specie: "alien",
-                                });
-                              }}
-                            >
-                              Alien
-                            </button>
-                          </div>
-                        </div>
-                        <div className="">
-                          <p className="text-sm pt-5 pb-2 text-gray-500 font-normal">
-                            Gender
-                          </p>
-                          <div className="flex gap-x-4">
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  gender: "all",
-                                });
-                              }}
-                            >
-                              All
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  gender: "Male",
-                                });
-                              }}
-                            >
-                              Male
-                            </button>
-                            <button
-                              className="w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ml-2"
-                              onClick={() => {
-                                setFilterButtons({
-                                  ...filterButtons,
-                                  gender: "Female",
-                                });
-                              }}
-                            >
-                              Female
-                            </button>
-                          </div>
-                        </div>
+                        {
+                          arrayButtons.map((item, index) => (
+                            <div>
+                              <p className={`${index === 0 ? 'mb-2' : 'pt-5 pb-2'} text-sm text-gray-500 font-normal`}>
+                                { item.text }
+                              </p>
+                              <div className="flex gap-x-4">
+                                {
+                                  item.buttons.map(button => (
+                                      <button
+                                        className={`w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ${button.value === filterData[item.name] ? 'bg-purple-100' : ''}`}
+                                        onClick={() => {
+                                          setFilterData({
+                                            ...filterData,
+                                            [item.name]: button.value,
+                                          });
+                                        }}
+                                      >
+                                        { button.text }
+                                      </button>
+                                  ))
+                                }
+                              </div>
+                            </div>
+                          ))
+                        }
                       </div>
                     </div>
                     <div className="flex justify-center">
                       <button
-                        className="bg-purple-700 text-white font-bold py-2 px-4 rounded-lg mt-5 mb-5"
+                        className={`${!conditions() ? 'text-gray-500 bg-gray-200' : 'bg-purple-600 hover:bg-purple-700 text-white'} font-semi-bold py-2 px-4 rounded-lg mt-5 mb-5`}
                         style={{ width: "85%" }}
-                        onClick={() => setFilterFlag(true)}
+                        onClick={() => {
+                          setFilterFlag(true);
+                          setFilterButtons({
+                            character: filterData.character,
+                            status: filterData.status,
+                            specie: filterData.specie,
+                            gender: filterData.gender,
+                          });
+                        }}
+                        disabled={!conditions()}
                       >
                         Filter
                       </button>
