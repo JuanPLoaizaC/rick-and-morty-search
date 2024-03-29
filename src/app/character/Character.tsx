@@ -1,46 +1,59 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import { ManageCharactersContext } from '../../hooks/useManageCharacters.tsx';
 
-const people = [
-  {
-    name: 'Leslie Alexander',
-    email: 'leslie.alexander@example.com',
-    role: 'Co-Founder / CEO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    lastSeen: '3h ago',
-    lastSeenDateTime: '2023-01-23T13:23Z',
-  },
-];
+interface CharacterData {
+  id: number;
+  name: string;
+  status: string;
+  species: string;
+  gender: string;
+  location: {
+    name: string;
+    url: string;
+  };
+  image: string;
+  // Agrega otras propiedades si es necesario
+};
 
 export const Character = () => {
+  const manageCharacters = useContext(ManageCharactersContext);
   const character = useParams();
+  
+  // En tu componente
+  const [characterSelected, setCharacterSelected] = useState<CharacterData | null>(null);
 
   useEffect(() => {
     if (character) {
-      console.log(character);
+      getServiceCharacters();
     }
   }, [character]);
+
+  const getServiceCharacters = async () => {
+    let { data } = await manageCharacters.getCharacterInformation(character.id);
+    console.log(data);
+    setCharacterSelected(data);
+  };
 
   return (
     <>
       {
-        character &&
+        characterSelected &&
         <>
           <div className="flex flex-col md:flex-row p-8 bg-white rounded-lg">
             <div className="md:w-2/3">
               <div className="flex items-center gap-x-6">
-                <img className="h-16 w-16 rounded-full" src={people[0].imageUrl} alt="" />
+                <img className="h-16 w-16 rounded-full" src={characterSelected.image} alt="" />
               </div>
               <div className="mt-2">
-                <h3 className="text-xl font-medium text-gray-800">Abadango Cluster Princess</h3>
+                <h3 className="text-xl font-medium text-gray-800">{ characterSelected.name }</h3>
               </div>
               <div className="mb-4 mt-5">
-                <label htmlFor="occupation" className="block text-gray-700 font-medium mb-1">
+                <label htmlFor="specie" className="block text-gray-700 font-medium mb-1">
                   Specie
                 </label>
                 <div className="p-2">
-                  <span className="text-gray-700">Alien</span>
+                  <span className="text-gray-700">{ characterSelected.species }</span>
                 </div>
               </div>
               <hr className='mb-3'/>
@@ -49,19 +62,27 @@ export const Character = () => {
                   Status
                 </label>
                 <div className="p-2">
-                  <span className="text-gray-700">Alive</span>
+                  <span className="text-gray-700">{ characterSelected.status }</span>
                 </div>
               </div>
               <hr className='mb-3'/>
               <div className="mb-4">
-                <label htmlFor="occupation" className="block text-gray-700 font-medium mb-1">
-                  Occupation
+                <label htmlFor="gender" className="block text-gray-700 font-medium mb-1">
+                  Gender
                 </label>
                 <div className="p-2">
-                  <span className="text-gray-700">Princess</span>
+                  <span className="text-gray-700">{ characterSelected.gender }</span>
                 </div>
               </div>
-              {/* Add more fields as needed */}
+              <hr className='mb-3'/>
+              <div className="mb-4">
+                <label htmlFor="location" className="block text-gray-700 font-medium mb-1">
+                  Location
+                </label>
+                <div className="p-2">
+                  <span className="text-gray-700">{ characterSelected.location.name }</span>
+                </div>
+              </div>
             </div>
           </div>
         </>

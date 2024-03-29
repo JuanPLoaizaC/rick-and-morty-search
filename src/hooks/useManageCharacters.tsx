@@ -9,8 +9,13 @@ function UseManageCharacters(props : any) {
     return await axios.get('https://rickandmortyapi.com/api/character');
   };
 
+  const getCharacterInformation = async (id) => {
+    //console.log(process.env.GET_CHARACTERS_URL);
+    return await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
+  };
+
   return (
-    <ManageCharactersContext.Provider value={{ getCharactersList }}>
+    <ManageCharactersContext.Provider value={{ getCharactersList, getCharacterInformation }}>
       {props.children}
     </ManageCharactersContext.Provider>
   );

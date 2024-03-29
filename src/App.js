@@ -13,7 +13,7 @@ class App extends Component {
         </div>
         <div className="col-span-2">
           <Routes>
-            <Route path='/character/:character' element={<Character />} />
+            <Route path='/character/:id' element={<Character />} />
           </Routes>
         </div>
       </div>
