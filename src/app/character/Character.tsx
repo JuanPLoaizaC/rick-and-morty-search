@@ -2,38 +2,25 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { ManageCharactersContext } from '../../hooks/useManageCharacters.tsx';
 
-interface CharacterData {
-  id: number;
-  name: string;
-  status: string;
-  species: string;
-  gender: string;
-  location: {
-    name: string;
-    url: string;
-  };
-  image: string;
-  // Agrega otras propiedades si es necesario
-};
-
 export const Character = () => {
   const manageCharacters = useContext(ManageCharactersContext);
   const character = useParams();
   
   // En tu componente
-  const [characterSelected, setCharacterSelected] = useState<CharacterData | null>(null);
+  const [characterSelected, setCharacterSelected] = useState<Character | null>(null);
 
   useEffect(() => {
     if (character) {
-      getServiceCharacters();
+      manageCharacters.setSelectedCharacterId(character.id);
+      manageCharacters.getCharacterById();
     }
   }, [character]);
 
-  const getServiceCharacters = async () => {
-    let { data } = await manageCharacters.getCharacterInformation(character.id);
-    console.log(data);
-    setCharacterSelected(data);
-  };
+  useEffect(() => {
+    if (manageCharacters.characterData) {
+      setCharacterSelected(manageCharacters.characterData.character);
+    }
+  }, [manageCharacters.characterData]);
 
   return (
     <>
@@ -80,7 +67,7 @@ export const Character = () => {
                   Location
                 </label>
                 <div className="p-2">
-                  <span className="text-gray-700">{ characterSelected.location.name }</span>
+                  <span className="text-gray-700">{ characterSelected.location?.name }</span>
                 </div>
               </div>
             </div>

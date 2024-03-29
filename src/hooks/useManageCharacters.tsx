@@ -1,21 +1,61 @@
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import axios from "axios";
-import { createContext } from "react";
+import { useState, createContext } from "react";
 
 const ManageCharactersContext = createContext<any>(null);
 
-function UseManageCharacters(props : any) {
-  const getCharactersList = async () => {
-    //console.log(process.env.GET_CHARACTERS_URL);
-    return await axios.get('https://rickandmortyapi.com/api/character');
-  };
+const charactersListQuery = gql`
+  query {
+    characters {
+      results {
+        id
+        name
+        status
+        species
+        gender
+        location {
+          name
+        }
+        image
+      }
+    }
+  }
+`;
 
-  const getCharacterInformation = async (id) => {
-    //console.log(process.env.GET_CHARACTERS_URL);
-    return await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
-  };
+const characterByIdQuery = gql`
+  query Character($id: ID!) {
+    character(id: $id) {
+      id
+      name
+      status
+      species
+      gender
+      location {
+        name
+      }
+      image
+    }
+  }
+`;
+
+function UseManageCharacters(props : any) {
+  const { loading, error, data } = useQuery(charactersListQuery);
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
+
+  console.log(selectedCharacterId);
+  const [getCharacterById, { data: characterData }] = useLazyQuery(
+    characterByIdQuery,
+    { variables: { id: selectedCharacterId ?? '' } }
+  );
 
   return (
-    <ManageCharactersContext.Provider value={{ getCharactersList, getCharacterInformation }}>
+    <ManageCharactersContext.Provider value={{ loading,
+      error,
+      characters: data ? data.characters.results : [],
+      characterData,
+      getCharacterById,
+      selectedCharacterId,
+      setSelectedCharacterId }}>
       {props.children}
     </ManageCharactersContext.Provider>
   );

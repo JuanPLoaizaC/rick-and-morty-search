@@ -30,7 +30,7 @@ const arrayButtons = [
 
 export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
-  const [charactersList, setCharactersList] = useState([]);
+  const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [charactersSelected, setCharactersSelected] = useState({});
   const [filter, setFilter] = useState("");
   const [filterData, setFilterData] = useState({
@@ -49,21 +49,16 @@ export const Search = () => {
   const [sortOrder, setSortOrder] = useState(null);
 
   useEffect(() => {
-    getServiceCharacters();
-  }, []);
-
-  const getServiceCharacters = async () => {
-    let { data } = await manageCharacters.getCharactersList();
-    let { results } = data;
-    setCharactersList(
-      results.map((character) => {
-        return {
-          ...character,
-          favourite: false,
-        };
-      })
-    );
-  };
+    if (manageCharacters.characters?.length > 0) {
+      setCharactersList(manageCharacters.characters.map((character: Character) => {
+          return {
+            ...character,
+            favourite: false,
+          };
+        })
+      );
+    }
+  }, [manageCharacters.characters]);
 
   const changeFavourite = (id: any) => {
     let list = [...charactersList];
@@ -254,7 +249,10 @@ export const Search = () => {
                     >
                       <Link
                         to={`/character/${character.id}`}
-                        onClick={() => setCharactersSelected(character)}
+                        onClick={() => {
+                          //setCharactersSelected(character);
+                          manageCharacters.setSelectedCharacterId(character.id);
+                        }}
                         className="flex items-center gap-x-4"
                       >
                         <img
@@ -353,7 +351,10 @@ export const Search = () => {
                     >
                       <Link
                         to={`/character/${character.id}`}
-                        onClick={() => setCharactersSelected(character)}
+                        onClick={() => {
+                          setCharactersSelected(character);
+                          manageCharacters.setSelectedCharacterId(character.id);
+                        }}
                         className="flex items-center gap-x-4"
                       >
                         <img
