@@ -54,6 +54,7 @@ export const Search = () => {
           return {
             ...character,
             favourite: false,
+            comments: ''
           };
         })
       );

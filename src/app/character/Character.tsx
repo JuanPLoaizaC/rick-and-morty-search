@@ -18,9 +18,32 @@ export const Character = () => {
 
   useEffect(() => {
     if (manageCharacters.characterData) {
-      setCharacterSelected(manageCharacters.characterData.character);
+      let comments = JSON.parse(localStorage.getItem('comments'));
+      setCharacterSelected({
+        ... manageCharacters.characterData.character,
+        favourite: false,
+        comments: comments.find(character => character.id === manageCharacters.characterData.character.id)?.comments ?? ''
+      });
     }
   }, [manageCharacters.characterData]);
+
+  const handleChangeComments = ({ value }) => {
+    setCharacterSelected({ ... characterSelected, comments: value });
+    const comments = JSON.parse(localStorage.getItem('comments')) ?? [];
+    let index = comments?.findIndex(character => character.id === characterSelected.id);
+    if (comments?.length > 0) {
+      comments[index] = {
+        ... comments[index],
+        comments: value
+      };
+    } else {
+      comments.push({
+        id: characterSelected.id,
+        comments: value
+      });
+    }
+    localStorage.setItem('comments', JSON.stringify(comments));
+  };
 
   return (
     <>
@@ -68,6 +91,15 @@ export const Character = () => {
                 </label>
                 <div className="p-2">
                   <span className="text-gray-700">{ characterSelected.location?.name }</span>
+                </div>
+              </div>
+              <hr className='mb-3'/>
+              <div className="mb-4">
+                <label htmlFor="comments" className="block text-gray-700 font-medium mb-1">
+                  Comments
+                </label>
+                <div className="p-2">
+                <textarea value={characterSelected.comments} name="about" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" onChange={({ target }) => handleChangeComments(target)} ></textarea>
                 </div>
               </div>
             </div>

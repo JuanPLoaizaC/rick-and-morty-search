@@ -8,5 +8,6 @@ interface Character {
       name: string;
     };
     image: string;
-    favourite: boolean
+    favourite: boolean;
+    comments: string;
   };

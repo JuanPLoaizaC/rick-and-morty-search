@@ -41,8 +41,7 @@ const characterByIdQuery = gql`
 function UseManageCharacters(props : any) {
   const { loading, error, data } = useQuery(charactersListQuery);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
-
-  console.log(selectedCharacterId);
+  
   const [getCharacterById, { data: characterData }] = useLazyQuery(
     characterByIdQuery,
     { variables: { id: selectedCharacterId ?? '' } }
