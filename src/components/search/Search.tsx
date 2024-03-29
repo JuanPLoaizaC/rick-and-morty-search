@@ -94,6 +94,16 @@ export const Search = () => {
     setCharactersList(list);
   };
 
+  const givingBackCharacters = () => {
+    setCharactersList(charactersList.map(character => {
+      return {
+        ... character,
+        deleted: false
+      };
+    }));
+    localStorage.setItem('deleted', JSON.stringify([]));
+  };
+
   return (
     <>
       <aside
@@ -114,6 +124,12 @@ export const Search = () => {
               onClick={() => setSortOrder("desc")}
             >
               Z-A
+            </button>
+            <button
+              className="rounded-full bg-gray-200 p-1 px-2 text-sm text-gray-800 hover:bg-gray-300"
+              onClick={() => givingBackCharacters()}
+            >
+              Restart
             </button>
           </div>
           <div className="relative mt-2.5">
