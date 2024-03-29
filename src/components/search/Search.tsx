@@ -129,7 +129,7 @@ export const Search = () => {
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"
+                      stroke-width="1.5"setCharactersSelected
                       stroke="currentColor"
                       className="w-6 h-6 text-purple-700 "
                     >
@@ -244,14 +244,14 @@ export const Search = () => {
                   .map((character) => (
                     <li
                       key={character.id}
-                      className={`flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 ml-6 rounded-lg ${charactersSelected?.id === character.id &&
+                      className={`flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 ml-6 rounded-lg ${manageCharacters?.selectedCharacterId === character.id &&
                         "bg-purple-100"
                         }`}
                     >
                       <Link
                         to={`/character/${character.id}`}
                         onClick={() => {
-                          //setCharactersSelected(character);
+                          setCharactersSelected(character);
                           manageCharacters.setSelectedCharacterId(character.id);
                         }}
                         className="flex items-center gap-x-4"
@@ -272,7 +272,7 @@ export const Search = () => {
                       </Link>
                       <div className="flex items-center">
                         <button
-                          className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${charactersSelected?.id === character.id
+                          className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId === character.id
                             ? "bg-white"
                             : "bg-transparent"
                             }`}
@@ -346,7 +346,7 @@ export const Search = () => {
                   .map((character) => (
                     <li
                       key={character.id}
-                      className={`flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 ml-6 rounded-lg ${charactersSelected?.id === character.id &&
+                      className={`flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 ml-6 rounded-lg ${manageCharacters?.selectedCharacterId === character.id &&
                         "bg-purple-100"
                         }`}
                     >
@@ -374,7 +374,7 @@ export const Search = () => {
                       </Link>
                       <div className="flex items-center">
                         <button
-                          className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${charactersSelected?.id === character.id
+                          className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId === character.id
                             ? "bg-white"
                             : "bg-transparent"
                             }`}
