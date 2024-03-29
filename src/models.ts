@@ -10,4 +10,5 @@ interface Character {
     image: string;
     favorite: boolean;
     comments: string;
+    deleted: boolean;
   };

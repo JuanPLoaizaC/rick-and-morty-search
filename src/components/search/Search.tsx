@@ -5,27 +5,35 @@ import { Popover, Transition } from "@headlessui/react";
 import { ManageCharactersContext } from "../../hooks/useManageCharacters.tsx";
 
 const arrayButtons = [
-  { text: 'Character', name: 'character', buttons: [
-    { text: 'All', value: 'all' },
-    { text: 'Starred', value: 'starred' },
-    { text: 'Others', value: 'others' }
-  ] },
-  { text: 'Status', name: 'status', buttons: [
-    { text: 'All', value: 'all' },
-    { text: 'Alive', value: 'alive' },
-    { text: 'Dead', value: 'dead' },
-    { text: 'Unknown', value: 'unknown' }
-  ] },
-  { text: 'Specie', name: 'specie', buttons: [
-    { text: 'All', value: 'all' },
-    { text: 'Human', value: 'human' },
-    { text: 'Alien', value: 'alien' }
-  ] },
-  { text: 'Gender', name: 'gender', buttons: [
-    { text: 'All', value: 'all' },
-    { text: 'Male', value: 'male' },
-    { text: 'Female', value: 'female' }
-  ] },
+  {
+    text: 'Character', name: 'character', buttons: [
+      { text: 'All', value: 'all' },
+      { text: 'Starred', value: 'starred' },
+      { text: 'Others', value: 'others' }
+    ]
+  },
+  {
+    text: 'Status', name: 'status', buttons: [
+      { text: 'All', value: 'all' },
+      { text: 'Alive', value: 'alive' },
+      { text: 'Dead', value: 'dead' },
+      { text: 'Unknown', value: 'unknown' }
+    ]
+  },
+  {
+    text: 'Specie', name: 'specie', buttons: [
+      { text: 'All', value: 'all' },
+      { text: 'Human', value: 'human' },
+      { text: 'Alien', value: 'alien' }
+    ]
+  },
+  {
+    text: 'Gender', name: 'gender', buttons: [
+      { text: 'All', value: 'all' },
+      { text: 'Male', value: 'male' },
+      { text: 'Female', value: 'female' }
+    ]
+  },
 ];
 
 export const Search = () => {
@@ -51,13 +59,15 @@ export const Search = () => {
   useEffect(() => {
     if (manageCharacters.characters?.length > 0) {
       let favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
+      let deleted = JSON.parse(localStorage.getItem('deleted')) ?? [];
       setCharactersList(manageCharacters.characters.map((character: Character) => {
-          return {
-            ...character,
-            favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false,
-            comments: ''
-          };
-        })
+        return {
+          ...character,
+          favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false,
+          comments: '',
+          deleted: deleted.find(deletedCharacter => deletedCharacter === character.id)
+        };
+      })
       );
     }
   }, [manageCharacters.characters]);
@@ -73,6 +83,15 @@ export const Search = () => {
 
   const conditions = () => {
     return filterData.character !== 'all' || filterData.status !== 'all' || filterData.specie !== 'all' || filterData.gender !== 'all';
+  };
+
+  const deleteCharacter = (id: any) => {
+    let list = [... charactersList];
+    let index = list.findIndex(character => character.id === id);
+    list[index].deleted = true;
+    let ids = list.filter(character => character.deleted).map(character => character.id);
+    localStorage.setItem('deleted', JSON.stringify(ids));
+    setCharactersList(list);
   };
 
   return (
@@ -106,7 +125,7 @@ export const Search = () => {
                 stroke-width="1.5"
                 stroke="currentColor"
                 className="w-6 h-6 ml-4"
-              >
+              >setCharactersSelected
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -125,14 +144,11 @@ export const Search = () => {
               <Popover className="relative">
                 <Popover.Button className="hover:bg-gray-100 rounded-lg grid items-center">
                   <div className='bg-purple-100 rounded-md p-0.5'>
-                    {
-                      //TODO Cuando esté abierto activar bg, el botón de filter, disabled
-                    }
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"setCharactersSelected
+                      stroke-width="1.5"
                       stroke="currentColor"
                       className="w-6 h-6 text-purple-700 "
                     >
@@ -160,22 +176,22 @@ export const Search = () => {
                           arrayButtons.map((item, index) => (
                             <div>
                               <p className={`${index === 0 ? 'mb-2' : 'pt-5 pb-2'} text-sm text-gray-500 font-normal`}>
-                                { item.text }
+                                {item.text}
                               </p>
                               <div className="flex gap-x-4">
                                 {
                                   item.buttons.map(button => (
-                                      <button
-                                        className={`w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ${button.value === filterData[item.name] ? 'bg-purple-100' : ''}`}
-                                        onClick={() => {
-                                          setFilterData({
-                                            ...filterData,
-                                            [item.name]: button.value,
-                                          });
-                                        }}
-                                      >
-                                        { button.text }
-                                      </button>
+                                    <button
+                                      className={`w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ${button.value === filterData[item.name] ? 'bg-purple-100' : ''}`}
+                                      onClick={() => {
+                                        setFilterData({
+                                          ...filterData,
+                                          [item.name]: button.value,
+                                        });
+                                      }}
+                                    >
+                                      {button.text}
+                                    </button>
                                   ))
                                 }
                               </div>
@@ -219,7 +235,8 @@ export const Search = () => {
                         (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
                         character.name.toUpperCase().includes(filter.toUpperCase()) &&
                         (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === 'all') &&
-                        (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all')
+                        (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all') &&
+                        !character.deleted
                       );
                     }).length
                   }
@@ -234,7 +251,8 @@ export const Search = () => {
                       (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
                       character.name.toUpperCase().includes(filter.toUpperCase()) &&
                       (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
-                      (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all')
+                      (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all') &&
+                      !character.deleted
                     );
                   })
                   .sort((a, b) => {
@@ -274,32 +292,48 @@ export const Search = () => {
                         </div>
                       </Link>
                       <div className="flex items-center">
-                        <button
-                          className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId === character.id
-                            ? "bg-white"
-                            : "bg-transparent"
-                            }`}
-                          onClick={() => changeFavorite(character.id)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`h-6 w-6 ${character.favorite
-                              ? ""
-                              : "text-gray-300 stroke-current"
-                              }`}
-                            viewBox="0 0 20 20"
+                        <div className="flex items-center">
+                          <button
+                            className='flex items-center justify-center rounded-full p-2 text-gray-800' onClick={() => deleteCharacter(character.id)}
                           >
-                            <path
-                              fill={`${character.favorite ? "green" : "white"
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId === character.id
+                              ? "bg-white"
+                              : "bg-transparent"
+                              }`}
+                            onClick={() => changeFavorite(character.id)}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className={`h-6 w-6 ${character.favorite ? "" : "text-gray-300 stroke-current"
                                 }`}
-                              stroke={`${character.favorite ? "none" : "currentColor"
-                                }`}
-                              strokeWidth="2"
-                              d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </button>
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fill={`${character.favorite ? "green" : "white"}`}
+                                stroke={`${character.favorite ? "none" : "currentColor"}`}
+                                strokeWidth="2"
+                                d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </li>
                   ))}
@@ -321,7 +355,8 @@ export const Search = () => {
                         (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
                         character.name.toUpperCase().includes(filter.toUpperCase()) &&
                         (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
-                        (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all')
+                        (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all') &&
+                        !character.deleted
                       );
                     }).length
                   }
@@ -336,7 +371,8 @@ export const Search = () => {
                       (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
                       character.name.toUpperCase().includes(filter.toUpperCase()) &&
                       (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
-                      (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all')
+                      (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all') &&
+                      !character.deleted
                     );
                   })
                   .sort((a, b) => {
@@ -376,32 +412,52 @@ export const Search = () => {
                         </div>
                       </Link>
                       <div className="flex items-center">
-                        <button
-                          className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId === character.id
-                            ? "bg-white"
-                            : "bg-transparent"
-                            }`}
-                          onClick={() => changeFavorite(character.id)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`h-6 w-6 ${character.favorite
-                              ? ""
-                              : "text-gray-300 stroke-current"
-                              }`}
-                            viewBox="0 0 20 20"
+                        <div className="flex items-center">
+                          <button
+                            className='flex items-center justify-center rounded-full p-2 text-gray-800' onClick={() => deleteCharacter(character.id)}
                           >
-                            <path
-                              fill={`${character.favorite ? "green" : "white"
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId === character.id
+                              ? "bg-white"
+                              : "bg-transparent"
+                              }`}
+                            onClick={() => changeFavorite(character.id)}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className={`h-6 w-6 ${character.favorite
+                                ? ""
+                                : "text-gray-300 stroke-current"
                                 }`}
-                              stroke={`${character.favorite ? "none" : "currentColor"
-                                }`}
-                              strokeWidth="2"
-                              d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </button>
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fill={`${character.favorite ? "green" : "white"
+                                  }`}
+                                stroke={`${character.favorite ? "none" : "currentColor"
+                                  }`}
+                                strokeWidth="2"
+                                d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </li>
                   ))}
