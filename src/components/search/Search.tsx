@@ -5,6 +5,7 @@ import { ManageCharactersContext } from '../../hooks/useManageCharacters.tsx';
 export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
   const [charactersList, setCharactersList] = useState([]);
+  const [sortOrder, setSortOrder] = useState(null);
 
   useEffect(() => {
     getServiceCharacters();
@@ -20,8 +21,22 @@ export const Search = () => {
       <aside id="sidebar-multi-level-sidebar" className="fixed top-0 left-0 z-40 w-1/3 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <p className='mx-3 my-4 text-xl'>Rick and Morty list</p>
+          <div className="flex justify-center gap-x-4 mb-3">
+            <button className="rounded-full bg-gray-200 p-1 px-2 text-sm text-gray-800 hover:bg-gray-300" onClick={() => setSortOrder('asc')}>
+              A-Z
+            </button>
+            <button className="rounded-full bg-gray-200 p-1 px-2 text-sm text-gray-800 hover:bg-gray-300" onClick={() => setSortOrder('desc')}>
+              Z-A
+            </button>
+          </div>
           <ul role="list" className="divide-y divide-gray-100">
-            {charactersList.map((character) => (
+            {charactersList.sort((a, b) => {
+              if (sortOrder === 'asc') {
+                return a.name.localeCompare(b.name);
+              } else if (sortOrder === 'desc') {
+                return b.name.localeCompare(a.name);
+              }
+            }).map((character) => (
               <li key={character.id} className="flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 dark:text-white dark:hover:bg-gray-700 ml-6 rounded-lg">
                 <Link to={`/character/${character.id}`} className="flex min-w-0 gap-x-4">
                   <img className="h-10 w-10 flex-none rounded-full bg-gray-50 ml-5" src={character.image} alt="" />
