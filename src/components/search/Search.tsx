@@ -50,10 +50,11 @@ export const Search = () => {
 
   useEffect(() => {
     if (manageCharacters.characters?.length > 0) {
+      let favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
       setCharactersList(manageCharacters.characters.map((character: Character) => {
           return {
             ...character,
-            favourite: false,
+            favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false,
             comments: ''
           };
         })
@@ -61,10 +62,12 @@ export const Search = () => {
     }
   }, [manageCharacters.characters]);
 
-  const changeFavourite = (id: any) => {
+  const changeFavorite = (id: any) => {
     let list = [...charactersList];
     let index = list.findIndex((character) => character.id === id);
-    list[index].favourite = !list[index].favourite;
+    list[index].favorite = !list[index].favorite;
+    const favorites = list.filter(character => character.favorite).map(character => character.id);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
     setCharactersList(list);
   };
 
@@ -212,7 +215,7 @@ export const Search = () => {
                   {
                     charactersList.filter((character) => {
                       return (
-                        character.favourite &&
+                        character.favorite &&
                         (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
                         character.name.toUpperCase().includes(filter.toUpperCase()) &&
                         (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === 'all') &&
@@ -227,7 +230,7 @@ export const Search = () => {
                 {charactersList
                   .filter((character) => {
                     return (
-                      character.favourite &&
+                      character.favorite &&
                       (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
                       character.name.toUpperCase().includes(filter.toUpperCase()) &&
                       (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
@@ -276,20 +279,20 @@ export const Search = () => {
                             ? "bg-white"
                             : "bg-transparent"
                             }`}
-                          onClick={() => changeFavourite(character.id)}
+                          onClick={() => changeFavorite(character.id)}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className={`h-6 w-6 ${character.favourite
+                            className={`h-6 w-6 ${character.favorite
                               ? ""
                               : "text-gray-300 stroke-current"
                               }`}
                             viewBox="0 0 20 20"
                           >
                             <path
-                              fill={`${character.favourite ? "green" : "white"
+                              fill={`${character.favorite ? "green" : "white"
                                 }`}
-                              stroke={`${character.favourite ? "none" : "currentColor"
+                              stroke={`${character.favorite ? "none" : "currentColor"
                                 }`}
                               strokeWidth="2"
                               d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
@@ -314,7 +317,7 @@ export const Search = () => {
                   {
                     charactersList.filter((character) => {
                       return (
-                        !character.favourite &&
+                        !character.favorite &&
                         (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
                         character.name.toUpperCase().includes(filter.toUpperCase()) &&
                         (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
@@ -329,7 +332,7 @@ export const Search = () => {
                 {charactersList
                   .filter((character) => {
                     return (
-                      !character.favourite &&
+                      !character.favorite &&
                       (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
                       character.name.toUpperCase().includes(filter.toUpperCase()) &&
                       (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
@@ -378,20 +381,20 @@ export const Search = () => {
                             ? "bg-white"
                             : "bg-transparent"
                             }`}
-                          onClick={() => changeFavourite(character.id)}
+                          onClick={() => changeFavorite(character.id)}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className={`h-6 w-6 ${character.favourite
+                            className={`h-6 w-6 ${character.favorite
                               ? ""
                               : "text-gray-300 stroke-current"
                               }`}
                             viewBox="0 0 20 20"
                           >
                             <path
-                              fill={`${character.favourite ? "green" : "white"
+                              fill={`${character.favorite ? "green" : "white"
                                 }`}
-                              stroke={`${character.favourite ? "none" : "currentColor"
+                              stroke={`${character.favorite ? "none" : "currentColor"
                                 }`}
                               strokeWidth="2"
                               d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
