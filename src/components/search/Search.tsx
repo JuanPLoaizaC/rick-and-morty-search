@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Popover, Transition } from "@headlessui/react";
 import '../../App.css';
 
@@ -39,6 +39,7 @@ const arrayButtons = [
 
 export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
+  let navigate = useNavigate();
   const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [charactersSelected, setCharactersSelected] = useState({});
   const [filter, setFilter] = useState("");
@@ -100,7 +101,15 @@ export const Search = () => {
     let ids = list.filter(character => character.deleted).map(character => character.id);
     localStorage.setItem('deleted', JSON.stringify(ids));
     setCharactersList(list);
+    navigateToIndexPage(id);
   };
+
+  const navigateToIndexPage = (id: any) => {
+    if (id === manageCharacters.selectedCharacterId) {
+      manageCharacters.setSelectedCharacterId(null);
+      navigate('/');
+    }
+  }
 
   const givingBackCharacters = () => {
     setCharactersList(charactersList.map(character => {
