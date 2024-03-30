@@ -80,6 +80,13 @@ export const Search = () => {
     const favorites = list.filter(character => character.favorite).map(character => character.id);
     localStorage.setItem('favorites', JSON.stringify(favorites));
     setCharactersList(list);
+    changeFlag(id);
+  };
+
+  const changeFlag = (id: any) => {
+    if (id === manageCharacters.selectedCharacterId) {
+      manageCharacters.setFlagStorage(!manageCharacters.flagStorage);
+    }
   };
 
   const conditions = () => {

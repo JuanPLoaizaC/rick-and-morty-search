@@ -29,6 +29,16 @@ export const Character = () => {
     }
   }, [manageCharacters.characterData]);
 
+  useEffect(() => {
+    if (manageCharacters.characterData) {
+      let favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
+      setCharacterSelected({
+        ...manageCharacters.characterData.character,
+        favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false
+      });
+    }
+  }, [manageCharacters.flagStorage]);
+
   const handleChangeComments = ({ value }) => {
     setCharacterSelected({ ...characterSelected, comments: value });
     const comments = JSON.parse(localStorage.getItem('comments')) ?? [];

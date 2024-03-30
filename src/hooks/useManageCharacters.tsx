@@ -41,6 +41,7 @@ const characterByIdQuery = gql`
 function UseManageCharacters(props : any) {
   const { loading, error, data } = useQuery(charactersListQuery);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
+  const [flagStorage, setFlagStorage] = useState<boolean>(false);
   
   const [getCharacterById, { data: characterData }] = useLazyQuery(
     characterByIdQuery,
@@ -54,7 +55,9 @@ function UseManageCharacters(props : any) {
       characterData,
       getCharacterById,
       selectedCharacterId,
-      setSelectedCharacterId }}>
+      setSelectedCharacterId,
+      flagStorage,
+      setFlagStorage }}>
       {props.children}
     </ManageCharactersContext.Provider>
   );
