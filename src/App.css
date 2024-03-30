@@ -2,4 +2,11 @@
     .hide-on-mobile {
       display: none;
     }
+    .size-panel {
+        width: 21em;
+    }
+    .size-buttons {
+        width: 4em;
+        font-size: 12px;
+    }
   }

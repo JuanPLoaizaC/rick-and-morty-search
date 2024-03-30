@@ -187,7 +187,7 @@ export const Search = () => {
                   leaveFrom="opacity-100 translate-y-0"
                   leaveTo="opacity-0 translate-y-1"
                 >
-                  <Popover.Panel className="absolute -right-0 z-10 mt-6 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5">
+                  <Popover.Panel className="absolute -right-0 z-10 mt-6 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 size-panel">
                     <div>
                       <div className="p-5">
                         {
@@ -200,7 +200,7 @@ export const Search = () => {
                                 {
                                   item.buttons.map(button => (
                                     <button
-                                      className={`w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 ${button.value === filterData[item.name] ? 'bg-purple-100' : ''}`}
+                                      className={`w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 size-buttons ${button.value === filterData[item.name] ? 'bg-purple-100' : ''}`}
                                       onClick={() => {
                                         setFilterData({
                                           ...filterData,
