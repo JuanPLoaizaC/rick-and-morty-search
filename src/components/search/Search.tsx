@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Popover, Transition } from "@headlessui/react";
+import '../../App.css';
 
 import { ManageCharactersContext } from "../../hooks/useManageCharacters.tsx";
 
@@ -86,7 +87,7 @@ export const Search = () => {
   };
 
   const deleteCharacter = (id: any) => {
-    let list = [... charactersList];
+    let list = [...charactersList];
     let index = list.findIndex(character => character.id === id);
     list[index].deleted = true;
     let ids = list.filter(character => character.deleted).map(character => character.id);
@@ -97,7 +98,7 @@ export const Search = () => {
   const givingBackCharacters = () => {
     setCharactersList(charactersList.map(character => {
       return {
-        ... character,
+        ...character,
         deleted: false
       };
     }));
@@ -107,10 +108,11 @@ export const Search = () => {
   return (
     <>
       <aside
-        className="fixed top-0 left-0 z-40 w-1/3 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className={`fixed inset-y-0 left-0 z-40 w-full h-full bg-gray-50 overflow-y-auto sm:w-3/3 sm:relative sm:translate-x-0 ${manageCharacters.selectedCharacterId ? 'hide-on-mobile' : ''}`}
         aria-label="Sidebar"
+        style={{  }}
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <div className="px-3 py-4 sm:px-4 sm:py-6">
           <p className="mx-3 my-4 text-xl font-bold">Rick and Morty list</p>
           <div className="flex justify-center gap-x-4 mb-3">
             <button
@@ -239,6 +241,8 @@ export const Search = () => {
               </Popover>
             </div>
           </div>
+        </div>
+        <div className="sm:h-screen sm:flex-1 overflow-y-auto">
           {filterButtons.character !== "others" && (
             <>
               <div className="flex ml-12 mt-8">
