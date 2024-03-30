@@ -42,6 +42,8 @@ export const Search = () => {
   let navigate = useNavigate();
   const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [charactersSelected, setCharactersSelected] = useState({});
+  const [isOpen, setIsOpen] = useState<Boolean>(false);
+  const [showPanel, setShowPanel] = useState<Boolean>(false);
   const [filter, setFilter] = useState("");
   const [filterData, setFilterData] = useState({
     character: "all",
@@ -176,8 +178,8 @@ export const Search = () => {
             />
             <div className="absolute inset-y-0 right-0 flex items-center">
               <Popover className="relative">
-                <Popover.Button className="hover:bg-gray-100 rounded-lg grid items-center">
-                  <div className='bg-purple-100 rounded-md p-0.5'>
+                <Popover.Button className={`hover:bg-gray-100 rounded-lg grid focus:outline-none ${isOpen ? 'bg-purple-100' : ''} `} onClick={() => setShowPanel(!showPanel)} >
+                  <div className='rounded-md p-0.5'>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -195,6 +197,7 @@ export const Search = () => {
                   </div>
                 </Popover.Button>
                 <Transition
+                  show={showPanel}
                   as={Fragment}
                   enter="transition ease-out duration-200"
                   enterFrom="opacity-0 translate-y-1"
@@ -202,6 +205,8 @@ export const Search = () => {
                   leave="transition ease-in duration-150"
                   leaveFrom="opacity-100 translate-y-0"
                   leaveTo="opacity-0 translate-y-1"
+                  afterEnter={() => setIsOpen(true)}
+                  afterLeave={() => setIsOpen(false)}
                 >
                   <Popover.Panel className="absolute -right-0 z-10 mt-6 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 size-panel">
                     <div>
@@ -246,6 +251,8 @@ export const Search = () => {
                             specie: filterData.specie,
                             gender: filterData.gender,
                           });
+                          setShowPanel(!showPanel);
+                          setIsOpen(false);
                         }}
                         disabled={!conditions()}
                       >
