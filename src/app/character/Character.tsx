@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ManageCharactersContext } from '../../hooks/useManageCharacters.tsx';
+import { CharacterInterface } from '../models.ts';
 
 export const Character = () => {
   const manageCharacters = useContext(ManageCharactersContext);
@@ -42,7 +43,7 @@ export const Character = () => {
   const handleChangeComments = ({ value }) => {
     setCharacterSelected({ ...characterSelected, comments: value });
     const comments = JSON.parse(localStorage.getItem('comments')) ?? [];
-    let index = comments?.findIndex(character => character.id === characterSelected.id);
+    let index = comments?.findIndex((character: { id: number; }) => character.id === characterSelected.id);
     if (comments?.length > 0) {
       comments[index] = {
         ...comments[index],

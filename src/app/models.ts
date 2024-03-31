@@ -2,7 +2,7 @@ interface Location {
   name: string;
 };
 
-interface CharacterInterface {
+export interface CharacterInterface {
   id: number;
   name: string;
   status: string;

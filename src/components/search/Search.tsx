@@ -4,6 +4,7 @@ import "../../App.css";
 
 import { ManageCharactersContext } from "../../hooks/useManageCharacters.tsx";
 import { SearchModal } from "./SearchModal.tsx";
+import { CharacterInterface } from "../../app/models.ts";
 
 const arrayButtons = [
   {
@@ -48,7 +49,7 @@ const arrayButtons = [
 export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
   let navigate = useNavigate();
-  const [charactersList, setCharactersList] = useState<Character[]>([]);
+  const [charactersList, setCharactersList] = useState<CharacterInterface[]>([]);
   const [charactersSelected, setCharactersSelected] = useState({});
   const [filter, setFilter] = useState("");
   const [filterData, setFilterData] = useState({
