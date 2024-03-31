@@ -25,7 +25,7 @@ export const SearchModal = ({
   };
 
   return (
-    <div className="w-full h-full mt-4 rounded-lg shadow-lg bg-white">
+    <div className="w-screen  h-screen md:w-full md:h-full mt-4 rounded-lg shadow-lg bg-white">
       <div className=" flex justify-center">
         <div className="p-5">
           {arrayButtons.map((item, index) => (

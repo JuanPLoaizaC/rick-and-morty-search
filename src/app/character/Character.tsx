@@ -72,7 +72,7 @@ export const Character = () => {
               <path fill='blue' d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
             </svg>
           </div>
-          <div className="flex flex-col md:flex-row p-8 bg-white rounded-lg">
+          <div className="mt-5 flex flex-col md:flex-row p-8 bg-white rounded-lg">
             <div className="md:w-2/3 sm:w-1/3">
               <div className="relative">
                 <img className='h-16 w-16 rounded-full bg-black z-10 top-0 left-0' src={characterSelected.image} />

@@ -7,7 +7,7 @@ import { Character } from './app/character/Character.tsx';
 class App extends Component {
   render() {
     return (
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-3 gap-4">
         <div>
           <Search />
         </div>
