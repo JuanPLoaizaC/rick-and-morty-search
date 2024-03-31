@@ -8,7 +8,7 @@ export const Character = () => {
   let navigate = useNavigate();
 
   // En tu componente
-  const [characterSelected, setCharacterSelected] = useState<Character | null>(null);
+  const [characterSelected, setCharacterSelected] = useState<CharacterInterface | null>(null);
 
   useEffect(() => {
     if (character) {

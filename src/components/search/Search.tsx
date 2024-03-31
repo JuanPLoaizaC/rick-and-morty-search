@@ -40,7 +40,7 @@ const arrayButtons = [
 export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
   let navigate = useNavigate();
-  const [charactersList, setCharactersList] = useState<Character[]>([]);
+  const [charactersList, setCharactersList] = useState<CharacterInterface[]>([]);
   const [charactersSelected, setCharactersSelected] = useState({});
   const [isOpen, setIsOpen] = useState<Boolean>(false);
   const [showPanel, setShowPanel] = useState<Boolean>(false);
@@ -64,7 +64,7 @@ export const Search = () => {
     if (manageCharacters.characters?.length > 0) {
       let favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
       let deleted = JSON.parse(localStorage.getItem('deleted')) ?? [];
-      setCharactersList(manageCharacters.characters.map((character: Character) => {
+      setCharactersList(manageCharacters.characters.map((character: CharacterInterface) => {
         return {
           ...character,
           favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false,
@@ -208,7 +208,7 @@ export const Search = () => {
                   afterEnter={() => setIsOpen(true)}
                   afterLeave={() => setIsOpen(false)}
                 >
-                  <Popover.Panel className="absolute -right-0 z-10 mt-6 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 size-panel">
+                  <Popover.Panel className="absolute -right-1 px-5 z-10 mt-6 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 size-panel" >
                     <div>
                       <div className="p-5">
                         {

@@ -1,14 +1,16 @@
-interface Character {
-    id: number;
-    name: string;
-    status: string;
-    species: string;
-    gender: string;
-    location: {
-      name: string;
-    };
-    image: string;
-    favorite: boolean;
-    comments: string;
-    deleted: boolean;
-  };
+interface Location {
+  name: string;
+};
+
+interface CharacterInterface {
+  id: number;
+  name: string;
+  status: string;
+  species: string;
+  gender: string;
+  location: Location
+  image: string;
+  favorite: boolean;
+  comments: string;
+  deleted: boolean;
+};
