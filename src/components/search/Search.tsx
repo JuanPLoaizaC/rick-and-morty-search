@@ -1,49 +1,55 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Popover, Transition } from "@headlessui/react";
-import '../../App.css';
+import "../../App.css";
 
 import { ManageCharactersContext } from "../../hooks/useManageCharacters.tsx";
+import { SearchModal } from "./SearchModal.tsx";
 
 const arrayButtons = [
   {
-    text: 'Character', name: 'character', buttons: [
-      { text: 'All', value: 'all' },
-      { text: 'Starred', value: 'starred' },
-      { text: 'Others', value: 'others' }
-    ]
+    text: "Character",
+    name: "character",
+    buttons: [
+      { text: "All", value: "all" },
+      { text: "Starred", value: "starred" },
+      { text: "Others", value: "others" },
+    ],
   },
   {
-    text: 'Status', name: 'status', buttons: [
-      { text: 'All', value: 'all' },
-      { text: 'Alive', value: 'alive' },
-      { text: 'Dead', value: 'dead' },
-      { text: 'Unknown', value: 'unknown' }
-    ]
+    text: "Status",
+    name: "status",
+    buttons: [
+      { text: "All", value: "all" },
+      { text: "Alive", value: "alive" },
+      { text: "Dead", value: "dead" },
+      { text: "Unknown", value: "unknown" },
+    ],
   },
   {
-    text: 'Specie', name: 'specie', buttons: [
-      { text: 'All', value: 'all' },
-      { text: 'Human', value: 'human' },
-      { text: 'Alien', value: 'alien' }
-    ]
+    text: "Specie",
+    name: "specie",
+    buttons: [
+      { text: "All", value: "all" },
+      { text: "Human", value: "human" },
+      { text: "Alien", value: "alien" },
+    ],
   },
   {
-    text: 'Gender', name: 'gender', buttons: [
-      { text: 'All', value: 'all' },
-      { text: 'Male', value: 'male' },
-      { text: 'Female', value: 'female' }
-    ]
+    text: "Gender",
+    name: "gender",
+    buttons: [
+      { text: "All", value: "all" },
+      { text: "Male", value: "male" },
+      { text: "Female", value: "female" },
+    ],
   },
 ];
 
 export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
   let navigate = useNavigate();
-  const [charactersList, setCharactersList] = useState<CharacterInterface[]>([]);
+  const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [charactersSelected, setCharactersSelected] = useState({});
-  const [isOpen, setIsOpen] = useState<Boolean>(false);
-  const [showPanel, setShowPanel] = useState<Boolean>(false);
   const [filter, setFilter] = useState("");
   const [filterData, setFilterData] = useState({
     character: "all",
@@ -57,21 +63,29 @@ export const Search = () => {
     specie: "all",
     gender: "all",
   });
-  const [filterFlag, setFilterFlag] = useState(true);
-  const [sortOrder, setSortOrder] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [sortOrder, setSortOrder] = useState("");
 
   useEffect(() => {
     if (manageCharacters.characters?.length > 0) {
-      let favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
-      let deleted = JSON.parse(localStorage.getItem('deleted')) ?? [];
-      setCharactersList(manageCharacters.characters.map((character: CharacterInterface) => {
-        return {
-          ...character,
-          favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false,
-          comments: '',
-          deleted: deleted.find(deletedCharacter => deletedCharacter === character.id)
-        };
-      })
+      let favorites = JSON.parse(localStorage.getItem("favorites")) ?? [];
+      let deleted = JSON.parse(localStorage.getItem("deleted")) ?? [];
+      setCharactersList(
+        manageCharacters.characters.map((character: Character) => {
+          return {
+            ...character,
+            favorite:
+              favorites.filter(
+                (favoriteCharacter) => favoriteCharacter === character.id
+              ) > 0
+                ? true
+                : false,
+            comments: "",
+            deleted: deleted.find(
+              (deletedCharacter) => deletedCharacter === character.id
+            ),
+          };
+        })
       );
     }
   }, [manageCharacters.characters]);
@@ -80,8 +94,10 @@ export const Search = () => {
     let list = [...charactersList];
     let index = list.findIndex((character) => character.id === id);
     list[index].favorite = !list[index].favorite;
-    const favorites = list.filter(character => character.favorite).map(character => character.id);
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+    const favorites = list
+      .filter((character) => character.favorite)
+      .map((character) => character.id);
+    localStorage.setItem("favorites", JSON.stringify(favorites));
     setCharactersList(list);
     changeFlag(id);
   };
@@ -92,16 +108,14 @@ export const Search = () => {
     }
   };
 
-  const conditions = () => {
-    return filterData.character !== 'all' || filterData.status !== 'all' || filterData.specie !== 'all' || filterData.gender !== 'all';
-  };
-
   const deleteCharacter = (id: any) => {
     let list = [...charactersList];
-    let index = list.findIndex(character => character.id === id);
+    let index = list.findIndex((character) => character.id === id);
     list[index].deleted = true;
-    let ids = list.filter(character => character.deleted).map(character => character.id);
-    localStorage.setItem('deleted', JSON.stringify(ids));
+    let ids = list
+      .filter((character) => character.deleted)
+      .map((character) => character.id);
+    localStorage.setItem("deleted", JSON.stringify(ids));
     setCharactersList(list);
     navigateToIndexPage(id);
   };
@@ -109,24 +123,27 @@ export const Search = () => {
   const navigateToIndexPage = (id: any) => {
     if (id === manageCharacters.selectedCharacterId) {
       manageCharacters.setSelectedCharacterId(null);
-      navigate('/');
+      navigate("/");
     }
-  }
+  };
 
   const givingBackCharacters = () => {
-    setCharactersList(charactersList.map(character => {
-      return {
-        ...character,
-        deleted: false
-      };
-    }));
-    localStorage.setItem('deleted', JSON.stringify([]));
+    setCharactersList(
+      charactersList.map((character) => {
+        return {
+          ...character,
+          deleted: false,
+        };
+      })
+    );
+    localStorage.setItem("deleted", JSON.stringify([]));
   };
 
   return (
     <>
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-full h-full bg-gray-50 overflow-y-auto sm:w-3/3 sm:relative sm:translate-x-0 ${manageCharacters.selectedCharacterId ? 'hide-on-mobile' : ''}`}
+        className={`fixed inset-y-0 left-0 z-40 w-full h-full bg-gray-50 overflow-y-auto sm:w-3/3 sm:relative sm:translate-x-0 ${manageCharacters.selectedCharacterId ? "hide-on-mobile" : ""
+          }`}
         aria-label="Sidebar"
         style={{}}
       >
@@ -153,116 +170,52 @@ export const Search = () => {
             </button>
           </div>
           <div className="relative mt-2.5">
-            <div className="absolute inset-y-0 left-0 flex items-center">
+            <div className="flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                className="w-6 h-6 ml-4"
-              >setCharactersSelected
+                className="absolute w-6 h-6 ml-4"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                 />
               </svg>
+              <input
+                placeholder="Search or filter results"
+                value={filter}
+                onChange={({ target }) => setFilter(target.value)}
+                className="block w-full rounded-lg border-0 px-3.5 py-4 pl-10 ml-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="absolute right-3 w-6 h-6 text-purple-700  cursor-pointer"
+                onClick={() => setShowModal(!showModal)}
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5"
+                />
+              </svg>
             </div>
-            <input
-              type="search"
-              placeholder="Search or filter results"
-              value={filter}
-              onChange={({ target }) => setFilter(target.value)}
-              className="block w-full rounded-lg border-0 px-3.5 py-4 pl-10 ml-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-            <div className="absolute inset-y-0 right-0 flex items-center">
-              <Popover className="relative">
-                <Popover.Button className={`hover:bg-gray-100 rounded-lg grid focus:outline-none ${isOpen ? 'bg-purple-100' : ''} `} onClick={() => setShowPanel(!showPanel)} >
-                  <div className='rounded-md p-0.5'>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      className="w-6 h-6 text-purple-700 "
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5"
-                      />
-                    </svg>
-                  </div>
-                </Popover.Button>
-                <Transition
-                  show={showPanel}
-                  as={Fragment}
-                  enter="transition ease-out duration-200"
-                  enterFrom="opacity-0 translate-y-1"
-                  enterTo="opacity-100 translate-y-0"
-                  leave="transition ease-in duration-150"
-                  leaveFrom="opacity-100 translate-y-0"
-                  leaveTo="opacity-0 translate-y-1"
-                  afterEnter={() => setIsOpen(true)}
-                  afterLeave={() => setIsOpen(false)}
-                >
-                  <Popover.Panel className="absolute -right-1 px-5 z-10 mt-6 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 size-panel" >
-                    <div>
-                      <div className="p-5">
-                        {
-                          arrayButtons.map((item, index) => (
-                            <div>
-                              <p className={`${index === 0 ? 'mb-2' : 'pt-5 pb-2'} text-sm text-gray-500 font-normal`}>
-                                {item.text}
-                              </p>
-                              <div className="flex gap-x-4">
-                                {
-                                  item.buttons.map(button => (
-                                    <button
-                                      className={`w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 size-buttons ${button.value === filterData[item.name] ? 'bg-purple-100' : ''}`}
-                                      onClick={() => {
-                                        setFilterData({
-                                          ...filterData,
-                                          [item.name]: button.value,
-                                        });
-                                      }}
-                                    >
-                                      {button.text}
-                                    </button>
-                                  ))
-                                }
-                              </div>
-                            </div>
-                          ))
-                        }
-                      </div>
-                    </div>
-                    <div className="flex justify-center">
-                      <button
-                        className={`${!conditions() ? 'text-gray-500 bg-gray-200' : 'bg-purple-600 hover:bg-purple-700 text-white'} font-semi-bold py-2 px-4 rounded-lg mt-5 mb-5`}
-                        style={{ width: "85%" }}
-                        onClick={() => {
-                          setFilterFlag(true);
-                          setFilterButtons({
-                            character: filterData.character,
-                            status: filterData.status,
-                            specie: filterData.specie,
-                            gender: filterData.gender,
-                          });
-                          setShowPanel(!showPanel);
-                          setIsOpen(false);
-                        }}
-                        disabled={!conditions()}
-                      >
-                        Filter
-                      </button>
-                    </div>
-                  </Popover.Panel>
-                </Transition>
-              </Popover>
-            </div>
+            {showModal && (
+              <SearchModal
+                arrayButtons={arrayButtons}
+                filterData={filterData}
+                setFilterData={setFilterData}
+                setFilterButtons={setFilterButtons}
+                setShowModal={setShowModal}
+              />
+            )}
           </div>
         </div>
         <div className="sm:h-screen sm:flex-1 overflow-y-auto">
@@ -275,10 +228,18 @@ export const Search = () => {
                     charactersList.filter((character) => {
                       return (
                         character.favorite &&
-                        (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
-                        character.name.toUpperCase().includes(filter.toUpperCase()) &&
-                        (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === 'all') &&
-                        (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all') &&
+                        (character.species.toUpperCase() ===
+                          filterButtons.specie.toUpperCase() ||
+                          filterButtons.specie === "all") &&
+                        character.name
+                          .toUpperCase()
+                          .includes(filter.toUpperCase()) &&
+                        (character.status.toUpperCase() ===
+                          filterButtons.status.toUpperCase() ||
+                          filterButtons.status === "all") &&
+                        (character.gender.toUpperCase() ===
+                          filterButtons.gender.toUpperCase() ||
+                          filterButtons.gender === "all") &&
                         !character.deleted
                       );
                     }).length
@@ -291,10 +252,18 @@ export const Search = () => {
                   .filter((character) => {
                     return (
                       character.favorite &&
-                      (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
-                      character.name.toUpperCase().includes(filter.toUpperCase()) &&
-                      (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
-                      (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all') &&
+                      (character.species.toUpperCase() ===
+                        filterButtons.specie.toUpperCase() ||
+                        filterButtons.specie === "all") &&
+                      character.name
+                        .toUpperCase()
+                        .includes(filter.toUpperCase()) &&
+                      (character.status.toUpperCase() ===
+                        filterButtons.status.toUpperCase() ||
+                        filterButtons.status === "all") &&
+                      (character.gender.toUpperCase() ===
+                        filterButtons.gender.toUpperCase() ||
+                        filterButtons.gender === "all") &&
                       !character.deleted
                     );
                   })
@@ -316,8 +285,8 @@ export const Search = () => {
                     >
                       <li
                         key={character.id}
-                        className={`flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 ml-6 rounded-lg ${manageCharacters?.selectedCharacterId === character.id &&
-                          "bg-purple-100"
+                        className={`flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 ml-6 rounded-lg ${manageCharacters?.selectedCharacterId ===
+                          character.id && "bg-purple-100"
                           }`}
                       >
                         <div className="flex items-center">
@@ -338,7 +307,8 @@ export const Search = () => {
                         <div className="flex items-center">
                           <div className="flex items-center">
                             <button
-                              className='flex items-center justify-center rounded-full p-2 text-gray-800' onClick={(e) => {
+                              className="flex items-center justify-center rounded-full p-2 text-gray-800"
+                              onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
                                 deleteCharacter(character.id);
@@ -360,7 +330,8 @@ export const Search = () => {
                               </svg>
                             </button>
                             <button
-                              className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId === character.id
+                              className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId ===
+                                character.id
                                 ? "bg-white"
                                 : "bg-transparent"
                                 }`}
@@ -372,13 +343,17 @@ export const Search = () => {
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={`h-6 w-6 ${character.favorite ? "" : "text-gray-300 stroke-current"
+                                className={`h-6 w-6 ${character.favorite
+                                  ? ""
+                                  : "text-gray-300 stroke-current"
                                   }`}
                                 viewBox="0 0 20 20"
                               >
                                 <path
-                                  fill={`${character.favorite ? "green" : "white"}`}
-                                  stroke={`${character.favorite ? "none" : "currentColor"}`}
+                                  fill={`${character.favorite ? "green" : "white"
+                                    }`}
+                                  stroke={`${character.favorite ? "none" : "currentColor"
+                                    }`}
                                   strokeWidth="2"
                                   d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
                                   clipRule="evenodd"
@@ -405,10 +380,18 @@ export const Search = () => {
                     charactersList.filter((character) => {
                       return (
                         !character.favorite &&
-                        (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
-                        character.name.toUpperCase().includes(filter.toUpperCase()) &&
-                        (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
-                        (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all') &&
+                        (character.species.toUpperCase() ===
+                          filterButtons.specie.toUpperCase() ||
+                          filterButtons.specie === "all") &&
+                        character.name
+                          .toUpperCase()
+                          .includes(filter.toUpperCase()) &&
+                        (character.status.toUpperCase() ===
+                          filterButtons.status.toUpperCase() ||
+                          filterButtons.status === "all") &&
+                        (character.gender.toUpperCase() ===
+                          filterButtons.gender.toUpperCase() ||
+                          filterButtons.gender === "all") &&
                         !character.deleted
                       );
                     }).length
@@ -421,14 +404,22 @@ export const Search = () => {
                   .filter((character) => {
                     return (
                       !character.favorite &&
-                      (character.species.toUpperCase() === filterButtons.specie.toUpperCase() || filterButtons.specie === "all") &&
-                      character.name.toUpperCase().includes(filter.toUpperCase()) &&
-                      (character.status.toUpperCase() === filterButtons.status.toUpperCase() || filterButtons.status === "all") &&
-                      (character.gender.toUpperCase() === filterButtons.gender.toUpperCase() || filterButtons.gender === 'all') &&
+                      (character.species.toUpperCase() ===
+                        filterButtons.specie.toUpperCase() ||
+                        filterButtons.specie === "all") &&
+                      character.name
+                        .toUpperCase()
+                        .includes(filter.toUpperCase()) &&
+                      (character.status.toUpperCase() ===
+                        filterButtons.status.toUpperCase() ||
+                        filterButtons.status === "all") &&
+                      (character.gender.toUpperCase() ===
+                        filterButtons.gender.toUpperCase() ||
+                        filterButtons.gender === "all") &&
                       !character.deleted
                     );
                   })
-                  .sort((a: CharacterInterface, b: CharacterInterface) => {
+                  .sort((a, b) => {
                     if (sortOrder === "asc") {
                       return a.name.localeCompare(b.name);
                     } else if (sortOrder === "desc") {
@@ -446,8 +437,8 @@ export const Search = () => {
                     >
                       <li
                         key={character.id}
-                        className={`flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 ml-6 rounded-lg ${manageCharacters?.selectedCharacterId === character.id &&
-                          "bg-purple-100"
+                        className={`flex justify-between gap-x-6 py-3.5 hover:bg-purple-100 ml-6 rounded-lg ${manageCharacters?.selectedCharacterId ===
+                          character.id && "bg-purple-100"
                           }`}
                       >
                         <div className="flex items-center">
@@ -468,7 +459,8 @@ export const Search = () => {
                         <div className="flex items-center">
                           <div className="flex items-center">
                             <button
-                              className='flex items-center justify-center rounded-full p-2 text-gray-800' onClick={(e) => {
+                              className="flex items-center justify-center rounded-full p-2 text-gray-800"
+                              onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
                                 deleteCharacter(character.id);
@@ -490,15 +482,16 @@ export const Search = () => {
                               </svg>
                             </button>
                             <button
-                              className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId === character.id
+                              className={`flex items-center justify-center rounded-full p-2 text-gray-800 mr-2 ${manageCharacters?.selectedCharacterId ===
+                                character.id
                                 ? "bg-white"
                                 : "bg-transparent"
                                 }`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  e.preventDefault();
-                                  changeFavorite(character.id);
-                                }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                changeFavorite(character.id);
+                              }}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
