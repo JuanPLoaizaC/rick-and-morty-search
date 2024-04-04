@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Search } from './components/search/Search.tsx';
 import { Character } from './app/character/Character.tsx';
 
@@ -14,6 +14,7 @@ class App extends Component {
         <div className="col-span-2">
           <Routes>
             <Route path='/character/:id' element={<Character />} />
+            <Route path='*' element={<Navigate to='/' />} />
           </Routes>
         </div>
       </div>
