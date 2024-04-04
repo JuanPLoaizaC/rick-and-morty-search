@@ -3,6 +3,7 @@ import './App.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Search } from './components/search/Search.tsx';
 import { Character } from './app/character/Character.tsx';
+import { PublicRoutes } from './routes.tsx';
 
 class App extends Component {
   render() {
@@ -12,10 +13,7 @@ class App extends Component {
           <Search />
         </div>
         <div className="col-span-2">
-          <Routes>
-            <Route path='/character/:id' element={<Character />} />
-            <Route path='*' element={<Navigate to='/' />} />
-          </Routes>
+          <PublicRoutes />
         </div>
       </div>
     );
