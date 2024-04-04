@@ -4,7 +4,7 @@ import { characterByIdQuery, charactersListQuery } from "../graphql/queries.ts";
 
 const ManageCharactersContext = createContext<any>(null);
 
-function UseManageCharacters(props : any) {
+const UseManageCharacters = (props : any) => {
   const { loading, error, data } = useQuery(charactersListQuery);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
   const [flagStorage, setFlagStorage] = useState<boolean>(false);

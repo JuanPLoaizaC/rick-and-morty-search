@@ -20,8 +20,8 @@ export const Character = () => {
 
   useEffect(() => {
     if (manageCharacters.characterData) {
-      let comments = JSON.parse(localStorage.getItem('comments')) ?? [];
-      let favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
+      const comments = JSON.parse(localStorage.getItem('comments')) ?? [];
+      const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
       setCharacterSelected({
         ...manageCharacters.characterData.character,
         favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false,
@@ -32,7 +32,7 @@ export const Character = () => {
 
   useEffect(() => {
     if (manageCharacters.characterData) {
-      let favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
+      const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
       setCharacterSelected({
         ...manageCharacters.characterData.character,
         favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false
@@ -43,7 +43,7 @@ export const Character = () => {
   const handleChangeComments = ({ value }) => {
     setCharacterSelected({ ...characterSelected, comments: value });
     const comments = JSON.parse(localStorage.getItem('comments')) ?? [];
-    let index = comments?.findIndex((character: { id: number; }) => character.id === characterSelected.id);
+    const index = comments?.findIndex((character: { id: number; }) => character.id === characterSelected.id);
     if (comments?.length > 0) {
       comments[index] = {
         ...comments[index],

@@ -48,7 +48,7 @@ const arrayButtons = [
 
 export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const [charactersList, setCharactersList] = useState<CharacterInterface[]>([]);
   const [charactersSelected, setCharactersSelected] = useState({});
   const [filter, setFilter] = useState("");
@@ -69,22 +69,18 @@ export const Search = () => {
 
   useEffect(() => {
     if (manageCharacters.characters?.length > 0) {
-      let favorites = JSON.parse(localStorage.getItem("favorites")) ?? [];
-      let deleted = JSON.parse(localStorage.getItem("deleted")) ?? [];
+      const favorites = JSON.parse(localStorage.getItem("favorites")) ?? [];
+      const deleted = JSON.parse(localStorage.getItem("deleted")) ?? [];
       setCharactersList(
-        manageCharacters.characters.map((character: Character) => {
+        manageCharacters.characters.map((character: CharacterInterface) => {
           return {
             ...character,
             favorite:
-              favorites.filter(
-                (favoriteCharacter) => favoriteCharacter === character.id
-              ) > 0
+              favorites.filter((favoriteCharacter: number) => favoriteCharacter === character.id) > 0
                 ? true
                 : false,
             comments: "",
-            deleted: deleted.find(
-              (deletedCharacter) => deletedCharacter === character.id
-            ),
+            deleted: deleted.find((deletedCharacter: number) => deletedCharacter === character.id),
           };
         })
       );
@@ -93,7 +89,7 @@ export const Search = () => {
 
   const changeFavorite = (id: any) => {
     let list = [...charactersList];
-    let index = list.findIndex((character) => character.id === id);
+    const index = list.findIndex((character) => character.id === id);
     list[index].favorite = !list[index].favorite;
     const favorites = list
       .filter((character) => character.favorite)
@@ -111,9 +107,9 @@ export const Search = () => {
 
   const deleteCharacter = (id: any) => {
     let list = [...charactersList];
-    let index = list.findIndex((character) => character.id === id);
+    const index = list.findIndex((character) => character.id === id);
     list[index].deleted = true;
-    let ids = list
+    const ids = list
       .filter((character) => character.deleted)
       .map((character) => character.id);
     localStorage.setItem("deleted", JSON.stringify(ids));
