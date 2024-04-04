@@ -40,7 +40,7 @@ export const SearchModal = ({
               >
                 {item.text}
               </p>
-              <div className="flex gap-x-4">
+              <div className="grid grid-cols-3 gap-y-4 2xl:flex gap-x-4">
                 {item.buttons.map((button) => (
                   <button
                     className={`w-24 hover:bg-purple-100 font-semi-bold py-2 px-4 rounded-lg border border-gray-300 size-buttons ${
