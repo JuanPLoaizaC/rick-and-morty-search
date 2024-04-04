@@ -4,6 +4,7 @@ interface Props {
   arrayButtons: any;
   filterData: any;
   setFilterData: React.Dispatch<React.SetStateAction<any>>;
+  filterButtons: any;
   setFilterButtons: any;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -12,15 +13,16 @@ export const SearchModal = ({
   arrayButtons,
   filterData,
   setFilterData,
+  filterButtons,
   setFilterButtons,
   setShowModal,
 }: Props) => {
   const conditions = () => {
     return (
-      filterData.character !== "all" ||
-      filterData.status !== "all" ||
-      filterData.specie !== "all" ||
-      filterData.gender !== "all"
+      filterData.character !== filterButtons.character ||
+      filterData.status !== filterButtons.status ||
+      filterData.specie !== filterButtons.specie ||
+      filterData.gender !== filterButtons.gender
     );
   };
 

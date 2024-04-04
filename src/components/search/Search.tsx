@@ -213,6 +213,7 @@ export const Search = () => {
                 arrayButtons={arrayButtons}
                 filterData={filterData}
                 setFilterData={setFilterData}
+                filterButtons={filterButtons}
                 setFilterButtons={setFilterButtons}
                 setShowModal={setShowModal}
               />
