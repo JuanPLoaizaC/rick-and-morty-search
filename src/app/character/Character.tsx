@@ -6,7 +6,7 @@ import { CharacterInterface } from '../models.ts';
 export const Character = () => {
   const manageCharacters = useContext(ManageCharactersContext);
   const character = useParams();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   // En tu componente
   const [characterSelected, setCharacterSelected] = useState<CharacterInterface | null>(null);
@@ -35,7 +35,7 @@ export const Character = () => {
       const favorites = JSON.parse(localStorage.getItem('favorites')) ?? [];
       setCharacterSelected({
         ...manageCharacters.characterData.character,
-        favorite: favorites.filter(favoriteCharacter => favoriteCharacter === character.id) > 0 ? true : false
+        favorite: favorites.filter((favoriteCharacter: string) => favoriteCharacter === character.id).length > 0 ? true : false
       });
     }
   }, [manageCharacters.flagStorage]);
@@ -43,7 +43,7 @@ export const Character = () => {
   const handleChangeComments = ({ value }) => {
     setCharacterSelected({ ...characterSelected, comments: value });
     const comments = JSON.parse(localStorage.getItem('comments')) ?? [];
-    const index = comments?.findIndex((character: { id: number; }) => character.id === characterSelected.id);
+    const index: number = comments?.findIndex((character: { id: number; }) => character.id === characterSelected?.id);
     if (comments?.length > 0) {
       comments[index] = {
         ...comments[index],
@@ -51,7 +51,7 @@ export const Character = () => {
       };
     } else {
       comments.push({
-        id: characterSelected.id,
+        id: characterSelected?.id,
         comments: value
       });
     }
@@ -69,7 +69,7 @@ export const Character = () => {
         characterSelected &&
         <>
           <div className="fixed top-4 left-4 w-12 h-12 text-center flex justify-center items-center cursor-pointer md:block" onClick={() => navigateToLogin()}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
               <path fill='blue' d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
             </svg>
           </div>

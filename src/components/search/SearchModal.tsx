@@ -1,11 +1,12 @@
 import React from "react";
+import { Buttons, FilterData } from "../../app/models";
 
 interface Props {
-  arrayButtons: any;
-  filterData: any;
-  setFilterData: React.Dispatch<React.SetStateAction<any>>;
-  filterButtons: any;
-  setFilterButtons: any;
+  arrayButtons: Buttons[];
+  filterData: FilterData;
+  setFilterData: React.Dispatch<React.SetStateAction<FilterData>>;
+  filterButtons: FilterData;
+  setFilterButtons: React.Dispatch<React.SetStateAction<FilterData>>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -30,7 +31,7 @@ export const SearchModal = ({
     <div className="w-screen  h-screen md:w-full md:h-full mt-4 rounded-lg shadow-lg bg-white">
       <div className=" flex justify-center">
         <div className="p-5">
-          {arrayButtons.map((item, index) => (
+          {arrayButtons.map((item, index: number) => (
             <div>
               <p
                 className={`${
@@ -77,8 +78,6 @@ export const SearchModal = ({
               specie: filterData.specie,
               gender: filterData.gender,
             });
-            /*           setShowPanel(!showPanel);
-            setIsOpen(false); */
             setShowModal(false);
           }}
           disabled={!conditions()}

@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext, Fragment } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../App.css";
 
 import { ManageCharactersContext } from "../../hooks/useManageCharacters.tsx";
 import { SearchModal } from "./SearchModal.tsx";
-import { CharacterInterface } from "../../app/models.ts";
+import { Buttons, CharacterInterface, FilterData } from "../../app/models.ts";
 
-const arrayButtons = [
+const arrayButtons: Buttons[] = [
   {
     text: "Character",
     name: "character",
@@ -50,27 +50,27 @@ export const Search = () => {
   const manageCharacters = useContext(ManageCharactersContext);
   const navigate = useNavigate();
   const [charactersList, setCharactersList] = useState<CharacterInterface[]>([]);
-  const [charactersSelected, setCharactersSelected] = useState({});
-  const [filter, setFilter] = useState("");
-  const [filterData, setFilterData] = useState({
+  const [charactersSelected, setCharactersSelected] = useState<CharacterInterface | {}>({});
+  const [filter, setFilter] = useState<string>("");
+  const [filterData, setFilterData] = useState<FilterData>({
     character: "all",
     status: "all",
     specie: "all",
     gender: "all",
   });
-  const [filterButtons, setFilterButtons] = useState({
+  const [filterButtons, setFilterButtons] = useState<FilterData>({
     character: "all",
     status: "all",
     specie: "all",
     gender: "all",
   });
-  const [showModal, setShowModal] = useState(false);
-  const [sortOrder, setSortOrder] = useState("");
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [sortOrder, setSortOrder] = useState<string>("");
 
   useEffect(() => {
     if (manageCharacters.characters?.length > 0) {
-      const favorites = JSON.parse(localStorage.getItem("favorites")) ?? [];
-      const deleted = JSON.parse(localStorage.getItem("deleted")) ?? [];
+      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      const deleted = JSON.parse(localStorage.getItem("deleted") || "[]");
       setCharactersList(
         manageCharacters.characters.map((character: CharacterInterface) => {
           return {
@@ -87,7 +87,7 @@ export const Search = () => {
     }
   }, [manageCharacters.characters]);
 
-  const changeFavorite = (id: any) => {
+  const changeFavorite = (id: number) => {
     let list = [...charactersList];
     const index = list.findIndex((character) => character.id === id);
     list[index].favorite = !list[index].favorite;
@@ -99,17 +99,17 @@ export const Search = () => {
     changeFlag(id);
   };
 
-  const changeFlag = (id: any) => {
+  const changeFlag = (id: number) => {
     if (id === manageCharacters.selectedCharacterId) {
       manageCharacters.setFlagStorage(!manageCharacters.flagStorage);
     }
   };
 
-  const deleteCharacter = (id: any) => {
-    let list = [...charactersList];
-    const index = list.findIndex((character) => character.id === id);
+  const deleteCharacter = (id: number) => {
+    let list: CharacterInterface[] = [...charactersList];
+    const index: number = list.findIndex((character) => character.id === id);
     list[index].deleted = true;
-    const ids = list
+    const ids: number[] = list
       .filter((character) => character.deleted)
       .map((character) => character.id);
     localStorage.setItem("deleted", JSON.stringify(ids));
@@ -117,7 +117,7 @@ export const Search = () => {
     navigateToIndexPage(id);
   };
 
-  const navigateToIndexPage = (id: any) => {
+  const navigateToIndexPage = (id: number) => {
     if (id === manageCharacters.selectedCharacterId) {
       manageCharacters.setSelectedCharacterId(null);
       navigate("/");
@@ -204,16 +204,18 @@ export const Search = () => {
                 />
               </svg>
             </div>
-            {showModal && (
-              <SearchModal
-                arrayButtons={arrayButtons}
-                filterData={filterData}
-                setFilterData={setFilterData}
-                filterButtons={filterButtons}
-                setFilterButtons={setFilterButtons}
-                setShowModal={setShowModal}
-              />
-            )}
+            <div className="absolute w-full">
+              {showModal && (
+                <SearchModal
+                  arrayButtons={arrayButtons}
+                  filterData={filterData}
+                  setFilterData={setFilterData}
+                  filterButtons={filterButtons}
+                  setFilterButtons={setFilterButtons}
+                  setShowModal={setShowModal}
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className="sm:h-screen sm:flex-1 overflow-y-auto">
@@ -279,6 +281,7 @@ export const Search = () => {
                         setCharactersSelected(character);
                         manageCharacters.setSelectedCharacterId(character.id);
                       }}
+                      key={character.id}
                       className="items-center gap-x-4"
                     >
                       <li
@@ -316,13 +319,13 @@ export const Search = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                strokeWidth="1.5"
+                                stroke-width="1.5"
                                 stroke="currentColor"
                                 className="w-6 h-6"
                               >
                                 <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
                                   d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
                                 />
                               </svg>
@@ -352,7 +355,7 @@ export const Search = () => {
                                     }`}
                                   stroke={`${character.favorite ? "none" : "currentColor"
                                     }`}
-                                  strokeWidth="2"
+                                  stroke-width="2"
                                   d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
                                   clipRule="evenodd"
                                 />
@@ -431,6 +434,7 @@ export const Search = () => {
                         setCharactersSelected(character);
                         manageCharacters.setSelectedCharacterId(character.id);
                       }}
+                      key={character.id}
                       className="items-center gap-x-4"
                     >
                       <li
@@ -468,13 +472,13 @@ export const Search = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                strokeWidth="1.5"
+                                stroke-width="1.5"
                                 stroke="currentColor"
                                 className="w-6 h-6"
                               >
                                 <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
                                   d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
                                 />
                               </svg>
@@ -504,7 +508,7 @@ export const Search = () => {
                                     }`}
                                   stroke={`${character.favorite ? "none" : "currentColor"
                                     }`}
-                                  strokeWidth="2"
+                                  stroke-width="2"
                                   d="M10 18l-1-1.08C4.54 13.25 2 11.15 2 8.5 2 6.42 3.42 5 5.5 5c1.54 0 3.04.99 4 2.36C10.46 5.99 11.96 5 13.5 5 15.58 5 17 6.42 17 8.5c0 2.65-2.54 4.75-7 8.42L10 18z"
                                   clipRule="evenodd"
                                 />
