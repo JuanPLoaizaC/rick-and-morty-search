@@ -1,42 +1,8 @@
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
-import axios from "axios";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { useState, createContext } from "react";
+import { characterByIdQuery, charactersListQuery } from "../graphql/queries.ts";
 
 const ManageCharactersContext = createContext<any>(null);
-
-const charactersListQuery = gql`
-  query {
-    characters {
-      results {
-        id
-        name
-        status
-        species
-        gender
-        location {
-          name
-        }
-        image
-      }
-    }
-  }
-`;
-
-const characterByIdQuery = gql`
-  query Character($id: ID!) {
-    character(id: $id) {
-      id
-      name
-      status
-      species
-      gender
-      location {
-        name
-      }
-      image
-    }
-  }
-`;
 
 function UseManageCharacters(props : any) {
   const { loading, error, data } = useQuery(charactersListQuery);
